@@ -143,6 +143,20 @@ LOGOUT_REDIRECT_URL = "users:login"
 LOGIN_URL = "users:login"
 LOGIN_REDIRECT_URL = "tasks:task-list"
 
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [
+                (
+                    os.environ.get("REDIS_HOST", "redis"),
+                    int(os.environ.get("REDIS_PORT", 6379)),
+                )
+            ],
+        },
+    },
+}
 try:
     from .local_settings import *
 except ImportError:
