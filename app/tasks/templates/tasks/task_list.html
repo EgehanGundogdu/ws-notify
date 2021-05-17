@@ -3,46 +3,45 @@
 
 {% block body %}
 <div class="container-fluid">
-<div class="d-md-flex h-md-100 align-items-center mt-5">
+    <div class="d-md-flex h-md-100 align-items-center mt-5">
 
-    <div class="col-md-6 p-0 bg-indigo h-md-100 ml-5 ">
+        <div class="col-md-6 p-0 bg-indigo h-md-100 ml-5 ">
 
-        <h1>Tasks, associated with you. <span class="badge badge-secondary">{{object_list.count}}</span></h1>
-        <div class="list-group">
-            {% for task in object_list %}
-            <span class="list-group-item clearfix">
-                {{task.title.title}}
-                <span class="float-right">
-                    <button data-id={{task.id}} type="button" class="btn btn-primary float-right task-detail-button"
-                        data-toggle="modal" data-target="#myModal">
-                        Detail
-                    </button>
+            <h1>Tasks, associated with you. <span class="badge badge-secondary">{{object_list.count}}</span></h1>
+            <div class="list-group">
+                {% for task in object_list %}
+                <span class="list-group-item clearfix">
+                    {{task.title.title}}
+                    <span class="float-right">
+                        <button data-id={{task.id}} type="button" class="btn btn-primary float-right task-detail-button"
+                            data-toggle="modal" data-target="#myModal">
+                            Detail
+                        </button>
+                    </span>
+                    {% if request.user.is_staff or request.user.is_superuser %}
+                    <span class="float-right">
+                            <a role="button" class="btn btn-warning mr-3" href="{% url 'tasks:task-update' pk=task.id %}">
+                            Update
+                            </a>
+                    </span>
+                    {% endif %}
+
+                    {% endfor %}
                 </span>
-            </span>
-            {% endfor %}
+            </div>
         </div>
-    </div>
 
 
-    <div class="col-md-5 p-0 bg-indigo h-md-100 ml-5  mr-3">
+        <div class="col-md-5 p-0 bg-indigo h-md-100 ml-5  mr-3">
 
-        <h1>Your task notifications.</h1>
-        <div class="list-group">
+            <h1>Your task notifications.</h1>
+            <div id="notificationWrapper" class="list-group">
 
-            <span class="list-group-item clearfix">
-                notification.
-                <span class="pull-right">
-                    <button  class="btn btn-info float-right" disabled>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
-                            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/>
-                          </svg>
-                    </button>
-                </span>
-            </span>
+
+            </div>
         </div>
-    </div>
 
-</div>
+    </div>
 
 </div>
 {% include 'tasks/task_detail_modal.html' %}
@@ -52,6 +51,36 @@
 
 {% block script %}
 <script>
+
+    //     const notificationTemplate = `<span class="list-group-item clearfix">
+    //     ${eventData.message} by ${eventData.updater} on ${new Date(Date.parse(evenetData.action_t))}
+    //     <span class="pull-right">
+    //         <button class="btn btn-info float-right" disabled>
+    //             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell"
+    //                 viewBox="0 0 16 16">
+    //                 <path
+    //                     d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z" />
+    //             </svg>
+    //         </button>
+    //     </span>
+    // </span>`
+
+    function createNewNotification(eventData) {
+        const notificationTemplate = `\
+        <span class="list-group-item clearfix">${eventData.message} by ${eventData.user} on ${moment(new Date(Date.parse(eventData.action_date))).fromNow()}
+            <span class="pull-right">\
+                <button class="btn btn-info float-right" disabled>\
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell"\
+                        viewBox="0 0 16 16">
+                        <path
+                            d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z" />
+                    </svg>
+                </button>
+            </span>
+        </span>`
+        return notificationTemplate
+    }
+
     $('.task-detail-button').on('click', function (event) {
 
         const task_id = event.target.getAttribute('data-id')
@@ -84,10 +113,42 @@
         $('#taskContent').empty()
         $('#taskReporter').empty()
         $('#taskWatchers').empty()
+    });
+
+    console.log(window.location.host)
+
+    const taskSocket = new WebSocket(`ws://${window.location.host}/ws/tasks/`);
+    taskSocket.onclose = (event) => {
+        console.log('socket closed.');
+    }
+    taskSocket.onerror = (event) => {
+        console.log('error happened..');
+    }
+    taskSocket.onmessage = (event) => {
+        let eventData = JSON.parse(event.data)
+        console.log(eventData);
+        const notificationCenter = $('#notificationWrapper')
+        const newNotification = createNewNotification(eventData)
+        // notificationCenter.append('<span class="list-group-item clearfix">wololo</span>')
+        notificationCenter.append(newNotification)
         
-});
+    }
+
 
 </script>
 
 
 {% endblock script %}
+
+<span class="list-group-item clearfix">
+    notification.
+    <span class="pull-right">
+        <button class="btn btn-info float-right" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell"
+                viewBox="0 0 16 16">
+                <path
+                    d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z" />
+            </svg>
+        </button>
+    </span>
+</span>
