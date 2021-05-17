@@ -3,8 +3,7 @@
 
 {% block body %}
 <div class="container-fluid">
-    <div class="d-md-flex h-md-100 align-items-center mt-5">
-
+    <div class="row mt-3">
         <div class="col-md-6 p-0 bg-indigo h-md-100 ml-5 ">
 
             <h1>Tasks, associated with you. <span class="badge badge-secondary">{{object_list.count}}</span></h1>
@@ -20,19 +19,19 @@
                     </span>
                     {% if request.user.is_staff or request.user.is_superuser %}
                     <span class="float-right">
-                            <a role="button" class="btn btn-warning mr-3" href="{% url 'tasks:task-update' pk=task.id %}">
+                        <a role="button" class="btn btn-warning mr-3" href="{% url 'tasks:task-update' pk=task.id %}">
                             Update
-                            </a>
+                        </a>
                     </span>
                     {% endif %}
 
-                    {% endfor %}
                 </span>
+                {% endfor %}
             </div>
         </div>
 
 
-        <div class="col-md-5 p-0 bg-indigo h-md-100 ml-5  mr-3">
+        <div class="col-md-5 p-0 bg-indigo h-md-100 ml-5 mr-3">
 
             <h1>Your task notifications.</h1>
             <div id="notificationWrapper" class="list-group">
@@ -131,7 +130,7 @@
         const newNotification = createNewNotification(eventData)
         // notificationCenter.append('<span class="list-group-item clearfix">wololo</span>')
         notificationCenter.append(newNotification)
-        
+
     }
 
 
