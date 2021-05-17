@@ -27,7 +27,9 @@ class Task(models.Model):
     )
     title = models.CharField(max_length=200)
     content = models.TextField()
-    watchers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+    watchers = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, blank=True, related_name="watched_tasks"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=20, choices=TaskStatuses.choices, default=TaskStatuses.TODO
