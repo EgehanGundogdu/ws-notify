@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'crispy_forms',
+    'rest_framework',
     'users',
 ]
 
@@ -138,6 +139,7 @@ AUTH_USER_MODEL = "users.User"
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGOUT_REDIRECT_URL = "users:login"
+LOGIN_URL = "users:login"
 
 try:
     from .local_settings import *
