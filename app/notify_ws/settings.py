@@ -137,6 +137,8 @@ AUTH_USER_MODEL = "users.User"
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+LOGOUT_REDIRECT_URL = "users:login"
+
 try:
     from .local_settings import *
 except ImportError:
