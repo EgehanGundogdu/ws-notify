@@ -7,8 +7,12 @@
     <div class="collapse navbar-collapse" id="loginLogoutRegister">
       <div class="navbar-nav ml-auto">
       {% if request.user.is_authenticated %}
+          {% if request.user.is_staff or request.user.is_superuser %}
+          <a class="btn btn-info" role="button" href="{% url 'tasks:task-create' %}">Create new task</a>
+          {% endif %}
           <span class="nav-link active">Hi {{request.user.username}}</span>
           <a class="nav-link active" href="{% url 'users:logout' %}">Logout</a>
+          
       {% else %}
       <a class="nav-link active" href="{% url 'users:register' %}">Register</a>
       <a class="nav-link active" href="{% url 'users:login' %}">Login</a>
