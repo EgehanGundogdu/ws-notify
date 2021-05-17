@@ -141,6 +141,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGOUT_REDIRECT_URL = "users:login"
 LOGIN_URL = "users:login"
+LOGIN_REDIRECT_URL = "tasks:task-list"
 
 try:
     from .local_settings import *

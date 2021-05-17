@@ -1,0 +1,93 @@
+{% extends 'base/_base.html' %}
+
+
+{% block body %}
+<div class="container-fluid">
+<div class="d-md-flex h-md-100 align-items-center mt-5">
+
+    <div class="col-md-6 p-0 bg-indigo h-md-100 ml-5 ">
+
+        <h1>Tasks, associated with you. <span class="badge badge-secondary">{{object_list.count}}</span></h1>
+        <div class="list-group">
+            {% for task in object_list %}
+            <span class="list-group-item clearfix">
+                {{task.title.title}}
+                <span class="float-right">
+                    <button data-id={{task.id}} type="button" class="btn btn-primary float-right task-detail-button"
+                        data-toggle="modal" data-target="#myModal">
+                        Detail
+                    </button>
+                </span>
+            </span>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <div class="col-md-5 p-0 bg-indigo h-md-100 ml-5  mr-3">
+
+        <h1>Your task notifications.</h1>
+        <div class="list-group">
+
+            <span class="list-group-item clearfix">
+                notification.
+                <span class="pull-right">
+                    <button  class="btn btn-info float-right" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
+                            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/>
+                          </svg>
+                    </button>
+                </span>
+            </span>
+        </div>
+    </div>
+
+</div>
+
+</div>
+{% include 'tasks/task_detail_modal.html' %}
+
+
+{% endblock body %}
+
+{% block script %}
+<script>
+    $('.task-detail-button').on('click', function (event) {
+
+        const task_id = event.target.getAttribute('data-id')
+        const user = "{{request.user.full_name}}"
+        $.ajax({
+            url: `detail/${task_id}/`,
+            success: (data) => {
+
+                $('#taskStatus').text(data.status)
+                $('#taskTitle').text(data.title)
+                $('#taskContent').text(data.content)
+                $('#taskReporter').text(data.reporter)
+                $('#taskAssignee').text(data.assignee)
+                data.watchers.forEach(watcher => {
+                    if (watcher === user) {
+                        $('#taskWatchers').append(`<li>You</li>`)
+                    }
+                    else {
+                        $('#taskWatchers').append(`<li>${watcher}</li>`)
+                    }
+                });
+
+            }
+        })
+    })
+
+    $('#myModal').on('hidden.bs.modal', function () {
+        $('#taskStatus').empty()
+        $('#taskTitle').empty()
+        $('#taskContent').empty()
+        $('#taskReporter').empty()
+        $('#taskWatchers').empty()
+        
+});
+
+</script>
+
+
+{% endblock script %}
