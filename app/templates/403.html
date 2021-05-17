@@ -1,0 +1,16 @@
+{% extends 'base/_base.html' %}
+
+
+{% block body %}
+<div class="d-flex justify-content-center mt-5">
+    <h3>Seems like you are trying to do something that you are not authorized to do.
+        This may not be a good idea. Come back please!</h3>
+</div>
+<div class="d-flex justify-content-center mt-5">
+    <h1 class="bold">403</h1>
+</div>
+
+<div class="d-flex justify-content-center mt-5">
+        <a href="{% url 'tasks:task-list' %}" class="btn btn-primary btn-lg active" role="button">Return to your task list.</a>
+</div>
+{% endblock body %}
