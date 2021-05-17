@@ -166,4 +166,5 @@ Thumbs.db
 .history
 .ionide
 
+.env
 # End of https://www.toptal.com/developers/gitignore/api/django,python,visualstudiocode
